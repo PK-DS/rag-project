@@ -1,0 +1,10 @@
+google-generativeai
+faiss-cpu
+pypdf
+python-docx
+numpy
+fastapi
+uvicorn
+python-dotenv
+mlflow
+
