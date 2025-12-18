@@ -1,39 +1,43 @@
 import os
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from dotenv import load_dotenv
-import google.generativeai as genai
 
 from app.rag_pipeline import build_pipeline
-from app.embeddings import embed_texts
-from app.llm import generate_answer
 
 load_dotenv()
-genai.configure(api_key=os.environ["GEMINI_API_KEY"])
 
-app = FastAPI()
+app = FastAPI(title="RAG API")
 
-index, meta = build_pipeline()
+rag = build_pipeline(
+    data_dir="data/documents",
+    top_k=3
+)
 
 class AskRequest(BaseModel):
     question: str
+
+class AskResponse(BaseModel):
+    answer: str
+    sources: list
 
 @app.get("/health")
 def health():
     return {"status": "ok"}
 
-@app.post("/ask")
+@app.post("/ask", response_model=AskResponse)
 def ask(req: AskRequest):
-    qv = embed_texts([req.question])
-    _, idx = index.search(qv, 3)
-    ctx = [meta[i] for i in idx[0]]
-
-    answer = generate_answer(req.question, ctx)
-
-    return {
-        "answer": answer,
-        "sources": [
-            {"document": c["document"], "snippet": c["chunk"]}
-            for c in ctx
-        ]
-    }
+    try:
+        answer, contexts = rag.answer(req.question)
+        return {
+            "answer": answer,
+            "sources": [
+                {
+                    "document": c["document"],
+                    "snippet": c["chunk"][:300]
+                }
+                for c in contexts
+            ]
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
