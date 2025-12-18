@@ -1,0 +1,17 @@
+katep@LAPTOP-0OR50JU7 MINGW64 /d/Bankllmassistant/rag-project (master)
+$ mkdir .github
+mkdir: cannot create directory ‘.github’: File exists
+
+katep@LAPTOP-0OR50JU7 MINGW64 /d/Bankllmassistant/rag-project (master)
+$ mkdir .github/workflows
+mkdir: cannot create directory ‘.github/workflows’: File exists
+
+katep@LAPTOP-0OR50JU7 MINGW64 /d/Bankllmassistant/rag-project (master)
+$ ^C
+
+katep@LAPTOP-0OR50JU7 MINGW64 /d/Bankllmassistant/rag-project (master)
+$ mkdir .github/workflows
+mkdir: cannot create directory ‘.github/workflows’: File exists
+
+katep@LAPTOP-0OR50JU7 MINGW64 /d/Bankllmassistant/rag-project (master)
+$ touch .github/workflows/ci.yml
